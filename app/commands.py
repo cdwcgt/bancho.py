@@ -65,10 +65,7 @@ from app.repositories import tourney_pool_maps as tourney_pool_maps_repo
 from app.repositories import tourney_pools as tourney_pools_repo
 from app.repositories import users as users_repo
 from app.usecases.performance import ScoreParams
-
-
-if TYPE_CHECKING:
-    from app.objects.channel import Channel
+from app.objects.channel import Channel
 
 
 BEATMAPS_PATH = Path.cwd() / ".data/osu"
