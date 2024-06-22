@@ -1425,7 +1425,11 @@ async def mp_make(ctx: Context) -> str | None:
 @mp_commands.add(Privileges.UNRESTRICTED)
 @ensure_match
 async def mp_close(ctx: Context, match: Match) -> str | None:
-    """Abort the current in-progress multiplayer match."""
+    """Close current match"""
+    for slot in match.slots:
+        slot.player.leave_match()
+    
+    
     match.unready_players(expected=SlotStatus.playing)
     match.reset_players_loaded_status()
 
@@ -1435,6 +1439,7 @@ async def mp_close(ctx: Context, match: Match) -> str | None:
         for alert in match.starting["alerts"]:
             alert.cancel()
         match.starting = None
+
     app.state.sessions.matches.remove(match)
     lobby = app.state.sessions.channels.get_by_name("#lobby")
     if lobby:
