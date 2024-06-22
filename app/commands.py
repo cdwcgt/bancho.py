@@ -1387,7 +1387,7 @@ async def mp_make(ctx: Context) -> str | None:
         instance=True,
     )
 
-    passwd = random.randint(10000000,99999999)
+    passwd = secrets.token_hex(8)
 
     match = Match(
         id=match_id,
