@@ -1703,7 +1703,7 @@ async def mp_settings(ctx: Context, match: Match) -> str | None:
     """Get current match settings"""
     res = []
     res.append(f"Room name: {match.name}")
-    res.append(f"Beatmap: osu.ppy.sh/b/{match.map_id} {match.map_name}")
+    res.append(f"Beatmap: {match.map_embed}")
     res.append(f"Team mode: {match.team_type.name}, Win condition: {match.win_condition.name}")
     mods = [mod.name for mod in match.mods]
     
