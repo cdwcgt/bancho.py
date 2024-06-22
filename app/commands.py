@@ -1335,7 +1335,7 @@ def ensure_match(
 ) -> Callable[[Context], Awaitable[str | None]]:
     @wraps(f)
     async def wrapper(ctx: Context) -> str | None:
-        match = ctx.player.match
+        match = ctx.player.match if not ctx.player.is_tourney_client else ctx.player.tourney_match
 
         # multi set is a bit of a special case,
         # as we do some additional checks.
