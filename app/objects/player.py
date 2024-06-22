@@ -649,23 +649,26 @@ class Player:
         self.leave_channel(self.match.chat)
 
         if all(s.empty() for s in self.match.slots):
-            # multi is now empty, chat has been removed.
-            # remove the multi from the channels list.
-            log(f"Match {self.match} finished.")
-
-            # cancel any pending start timers
-            if self.match.starting is not None:
-                self.match.starting["start"].cancel()
-                for alert in self.match.starting["alerts"]:
-                    alert.cancel()
-
-                self.match.starting = None
-
-            app.state.sessions.matches.remove(self.match)
-
-            lobby = app.state.sessions.channels.get_by_name("#lobby")
-            if lobby:
-                lobby.enqueue(app.packets.dispose_match(self.match.id))
+            if self.match.is_tournament_match:
+                self.match.tournament_remove_last_check_time = time.time()
+            else:
+                # remove the multi from the channels list.
+                # multi is now empty and not a tournament match, chat has been removed.
+                log(f"Match {self.match} finished.")
+    
+                # cancel any pending start timers
+                if self.match.starting is not None:
+                    self.match.starting["start"].cancel()
+                    for alert in self.match.starting["alerts"]:
+                        alert.cancel()
+    
+                    self.match.starting = None
+    
+                app.state.sessions.matches.remove(self.match)
+    
+                lobby = app.state.sessions.channels.get_by_name("#lobby")
+                if lobby:
+                    lobby.enqueue(app.packets.dispose_match(self.match.id))
 
         else:  # multi is not empty
             if self is self.match.host:

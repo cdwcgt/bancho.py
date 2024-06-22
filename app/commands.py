@@ -40,6 +40,7 @@ import app.usecases.performance
 import app.utils
 from app.constants import regexes
 from app.constants.gamemodes import GAMEMODE_REPR_LIST
+from app.constants.gamemodes import GameMode
 from app.constants.mods import SPEED_CHANGING_MODS
 from app.constants.mods import Mods
 from app.constants.privileges import ClanPrivileges
@@ -64,6 +65,7 @@ from app.repositories import tourney_pool_maps as tourney_pool_maps_repo
 from app.repositories import tourney_pools as tourney_pools_repo
 from app.repositories import users as users_repo
 from app.usecases.performance import ScoreParams
+
 
 if TYPE_CHECKING:
     from app.objects.channel import Channel
@@ -1359,6 +1361,68 @@ def ensure_match(
 
     return wrapper
 
+
+@mp_commands.add(Privileges.UNRESTRICTED, hidden=True)
+async def mp_make(ctx: Context) -> str | None:
+    if ctx.args > 1:
+        return "Uasge: !mp make <match_name>"
+    
+    if not ctx.args:
+        return "Please provide the name of match"
+    
+    match_name = ctx.args[0]
+    
+    match_id = app.state.sessions.matches.get_free()
+
+    if match_id is None:
+        # failed to create match (match slots full).
+        ctx.player.send_bot("Failed to create match (no slots available).")
+        ctx.player.enqueue(app.packets.match_join_fail())
+        return
+
+    # create the channel and add it
+    # to the global channel list as
+    # an instanced channel.
+    chat_channel = Channel(
+        name=f"#multi_{match_id}",
+        topic=f"MID {match_id}'s multiplayer channel.",
+        auto_join=False,
+        instance=True,
+    )
+
+    passwd = random.randint(10000000,99999999)
+
+    match = Match(
+        id=match_id,
+        name=match_name,
+        password=passwd,
+        has_public_history=True,
+        map_name="",
+        map_id=0,
+        map_md5="",
+        host_id=ctx.player.id if ctx.player.is_tourney_client else 0,
+        mode=GameMode(),
+        mods=Mods(),
+        win_condition=MatchWinConditions(0),
+        team_type=MatchTeamTypes(0),
+        freemods=bool(0),
+        seed=random.randint(0,9999999),
+        chat_channel=chat_channel,
+        is_tournament_match=True
+    )
+
+    app.state.sessions.matches[match_id] = match
+    app.state.sessions.channels.append(chat_channel)
+    match.chat = chat_channel
+
+    if ctx.player.is_tourney_client:
+        return f"Match created, id: {match_id}, password: {passwd}"
+
+    ctx.player.update_latest_activity_soon()
+    ctx.player.join_match(match, passwd)
+
+    match.chat.send_bot(f"Match created by {ctx.player.name}.")
+    log(f"{ctx.player} created a new multiplayer match.")
 
 @mp_commands.add(Privileges.UNRESTRICTED, aliases=["h"])
 @ensure_match

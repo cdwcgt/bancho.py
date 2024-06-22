@@ -159,6 +159,7 @@ class Match:
         freemods: bool,
         seed: int,
         chat_channel: Channel,
+        is_tournament_match: bool
     ) -> None:
         self.id = id
         self.name = name
@@ -187,6 +188,9 @@ class Match:
         self.in_progress = False
         self.starting: StartingTimers | None = None
         self.seed = seed  # used for mania random mod
+        
+        self.is_tournament_match = is_tournament_match
+        self.tournament_remove_last_check_time : int | None = None
 
         self.tourney_pool: TourneyPool | None = None
 
