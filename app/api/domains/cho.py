@@ -333,11 +333,12 @@ class SendMessage(BasePacket):
 
             t_chan = app.state.sessions.channels.get_by_name(f"#spec_{spec_id}")
         elif recipient == "#multiplayer":
-            if not player.match:
-                # they're not in a match?
-                return
-
-            t_chan = player.match.chat
+            if player.is_tourney_client and player.tourney_match:
+                t_chan = player.tourney_match.chat
+            elif player.match:
+                t_chan = player.match.chat
+            # they're not in a match?
+            return
         else:
             t_chan = app.state.sessions.channels.get_by_name(recipient)
 
@@ -1982,6 +1983,7 @@ class TourneyMatchJoinChannel(BasePacket):
         # attempt to join match chan
         if player.join_channel(match.chat):
             match.tourney_clients.add(player.id)
+            player.tourney_match = match
 
 
 @register(ClientPackets.TOURNAMENT_LEAVE_MATCH_CHANNEL)
@@ -2003,6 +2005,7 @@ class TourneyMatchLeaveChannel(BasePacket):
         # attempt to join match chan
         player.leave_channel(match.chat)
         match.tourney_clients.remove(player.id)
+        player.tourney_match = None
 
 
 @register(ClientPackets.FRIEND_ADD)

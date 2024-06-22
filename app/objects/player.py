@@ -275,6 +275,7 @@ class Player:
         self.spectators: list[Player] = []
         self.spectating: Player | None = None
         self.match: Match | None = None
+        self.tourney_match: Match | None = None
         self.stealth = False
 
         self.pres_filter = PresenceFilter.Nil
