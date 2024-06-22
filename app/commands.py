@@ -1364,13 +1364,10 @@ def ensure_match(
 
 @mp_commands.add(Privileges.UNRESTRICTED, hidden=True)
 async def mp_make(ctx: Context) -> str | None:
-    if ctx.args > 1:
-        return "Uasge: !mp make <match_name>"
-    
     if not ctx.args:
         return "Please provide the name of match"
     
-    match_name = ctx.args[0]
+    match_name = " ".join(ctx.args)
     
     match_id = app.state.sessions.matches.get_free()
 
