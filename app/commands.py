@@ -1704,7 +1704,7 @@ async def mp_settings(ctx: Context, match: Match) -> str | None:
     res.append(f"Room name: {match.name}")
     res.append(f"Beatmap: osu.ppy.sh/b/{match.map.map_id} {match.map_name}")
     res.append(f"Team mode: {match.team_type}, Win condition: {match.win_condition}")
-    res.append(f"Mods: {match.mods} {"freemod" if match.freemods else ""}")
+    res.append(f"Mods: {match.mods} {'freemod' if match.freemods else ''}")
     for slot in match.slots:
         if not slot.player:
             continue
