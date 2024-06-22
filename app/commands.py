@@ -1677,6 +1677,40 @@ async def mp_host(ctx: Context, match: Match) -> str | None:
     match.enqueue_state(lobby=True)
     return "Match host updated."
 
+@mp_commands.add(Privileges.UNRESTRICTED)
+@ensure_match
+async def mp_kick(ctx: Context, match: Match) -> str | None:
+    """Kick a player from match by id."""
+    if len(ctx.args) != 1:
+        return "Invalid syntax: !mp kick <name>"
+
+    target = app.state.sessions.players.get(name=ctx.args[0])
+    if not target:
+        return "Could not find a user by that name."
+
+    if target not in {slot.player for slot in match.slots}:
+        return "Found no such player in the match."
+
+    target.leave_match()
+    
+    return f"{target.name} has been kicked"
+
+
+@mp_commands.add(Privileges.UNRESTRICTED, hidden=True)
+@ensure_match
+async def mp_settings(ctx: Context, match: Match) -> str | None:
+    """Get current match settings"""
+    res = []
+    res.append(f"Room name: {match.name}")
+    res.append(f"Beatmap: osu.ppy.sh/b/{match.map.map_id} {match.map_name}")
+    res.append(f"Team mode: {match.team_type}, Win condition: {match.win_condition}")
+    res.append(f"Mods: {match.mods} {"freemod" if match.freemods else ""}")
+    for slot in match.slots:
+        if not slot.player:
+            continue
+        res.append(f"{slot.player.name} {slot.status} {slot.team} {slot.mods}")
+    
+    return "\n".join(res)
 
 @mp_commands.add(Privileges.UNRESTRICTED)
 @ensure_match
