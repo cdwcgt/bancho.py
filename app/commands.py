@@ -1404,6 +1404,8 @@ async def mp_make(ctx: Context) -> str | None:
         chat_channel=chat_channel,
         is_tournament_match=True
     )
+    
+    match._refs.add(ctx.player)
 
     app.state.sessions.matches[match_id] = match
     app.state.sessions.channels.append(chat_channel)
@@ -1417,6 +1419,7 @@ async def mp_make(ctx: Context) -> str | None:
 
     match.chat.send_bot(f"Match created by {ctx.player.name}.")
     log(f"{ctx.player} created a new multiplayer match.")
+    return f"Match created, id: {match_id}, password: {passwd}"
 
 
 @mp_commands.add(Privileges.UNRESTRICTED)

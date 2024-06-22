@@ -655,17 +655,17 @@ class Player:
                 # remove the multi from the channels list.
                 # multi is now empty and not a tournament match, chat has been removed.
                 log(f"Match {self.match} finished.")
-    
+
                 # cancel any pending start timers
                 if self.match.starting is not None:
                     self.match.starting["start"].cancel()
                     for alert in self.match.starting["alerts"]:
                         alert.cancel()
-    
+
                     self.match.starting = None
-    
+
                 app.state.sessions.matches.remove(self.match)
-    
+
                 lobby = app.state.sessions.channels.get_by_name("#lobby")
                 if lobby:
                     lobby.enqueue(app.packets.dispose_match(self.match.id))
@@ -678,10 +678,6 @@ class Player:
                         self.match.host_id = s.player.id
                         self.match.host.enqueue(app.packets.match_transfer_host())
                         break
-
-            if self in self.match._refs:
-                self.match._refs.remove(self)
-                self.match.chat.send_bot(f"{self.name} removed from match referees.")
 
             # notify others of our deprature
             self.match.enqueue_state()
