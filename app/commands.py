@@ -1394,7 +1394,7 @@ async def mp_make(ctx: Context) -> str | None:
         map_name="",
         map_id=0,
         map_md5="",
-        host_id=ctx.player.id if ctx.player.is_tourney_client else 0,
+        host_id=ctx.player.id if not ctx.player.is_tourney_client else -1,
         mode=GameMode(0),
         mods=Mods(0),
         win_condition=MatchWinConditions(0),

@@ -205,12 +205,8 @@ class Match:
         self.tourney_clients: set[int] = set()  # player ids
 
     @property
-    def host(self) -> Player:
+    def host(self) -> Player | None:
         player = app.state.sessions.players.get(id=self.host_id)
-        if player is None:
-            raise ValueError(
-                f"Host with id {self.host_id} not found for match {self!r}",
-            )
         return player
 
     @property
