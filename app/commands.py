@@ -1692,7 +1692,7 @@ async def mp_kick(ctx: Context, match: Match) -> str | None:
         return "Found no such player in the match."
 
     target.leave_match()
-    target.enqueue(app.packets.update_match(match, send_pw=False))
+    match.enqueue_state()
     
     return f"{target.name} has been kicked"
 
