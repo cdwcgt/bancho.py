@@ -159,7 +159,7 @@ class Match:
         freemods: bool,
         seed: int,
         chat_channel: Channel,
-        is_tournament_match: bool
+        is_tournament_match = False
     ) -> None:
         self.id = id
         self.name = name
