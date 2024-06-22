@@ -1703,12 +1703,17 @@ async def mp_settings(ctx: Context, match: Match) -> str | None:
     res = []
     res.append(f"Room name: {match.name}")
     res.append(f"Beatmap: osu.ppy.sh/b/{match.map_id} {match.map_name}")
-    res.append(f"Team mode: {match.team_type}, Win condition: {match.win_condition}")
-    res.append(f"Mods: {match.mods} {'freemod' if match.freemods else ''}")
+    res.append(f"Team mode: {match.team_type.name}, Win condition: {match.win_condition.name}")
+    mods = [mod.name for mod in match.mods]
+    
+    res.append(f"Mods: {' '.join(mods)} {'freemod' if match.freemods else ''}")
     for slot in match.slots:
         if not slot.player:
             continue
-        res.append(f"{slot.player.name} {slot.status} {slot.team} {slot.mods}")
+        
+        mods = [mod.name for mod in slot.mods]
+        
+        res.append(f"{slot.player.name} {slot.status.name} {slot.team.name} {' '.join(mods)}")
     
     return "\n".join(res)
 
