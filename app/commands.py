@@ -1424,6 +1424,25 @@ async def mp_make(ctx: Context) -> str | None:
     match.chat.send_bot(f"Match created by {ctx.player.name}.")
     log(f"{ctx.player} created a new multiplayer match.")
 
+
+@mp_commands.add(Privileges.UNRESTRICTED)
+@ensure_match
+async def mp_close(ctx: Context, match: Match) -> str | None:
+    """Abort the current in-progress multiplayer match."""
+    match.unready_players(expected=SlotStatus.playing)
+    match.reset_players_loaded_status()
+
+    # cancel any pending start timers
+    if match.starting is not None:
+        match.starting["start"].cancel()
+        for alert in match.starting["alerts"]:
+            alert.cancel()
+        match.starting = None
+    app.state.sessions.matches.remove(match)
+    lobby = app.state.sessions.channels.get_by_name("#lobby")
+    if lobby:
+        lobby.enqueue(app.packets.dispose_match(match.id))
+
 @mp_commands.add(Privileges.UNRESTRICTED, aliases=["h"])
 @ensure_match
 async def mp_help(ctx: Context, match: Match) -> str | None:
