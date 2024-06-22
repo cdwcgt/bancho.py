@@ -337,8 +337,9 @@ class SendMessage(BasePacket):
                 t_chan = player.tourney_match.chat
             elif player.match:
                 t_chan = player.match.chat
-            # they're not in a match?
-            return
+            else:
+                # they're not in a match?
+                return
         else:
             t_chan = app.state.sessions.channels.get_by_name(recipient)
 
