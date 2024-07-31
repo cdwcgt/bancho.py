@@ -18,6 +18,7 @@ from app.constants import regexes
 from app.constants.gamemodes import GameMode
 from app.constants.mods import Mods
 from app.objects.beatmap import Beatmap
+from app.objects.channel import Channel
 from app.repositories.tourney_pools import TourneyPool
 from app.utils import escape_enum
 from app.utils import pymysql_encode
@@ -25,8 +26,7 @@ from app.constants.privileges import Privileges
 
 if TYPE_CHECKING:
     from asyncio import TimerHandle
-
-    from app.objects.channel import Channel
+    
     from app.objects.player import Player
 
 
