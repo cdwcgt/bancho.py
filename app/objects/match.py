@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import time
 from collections import defaultdict
 from collections.abc import Sequence
 from datetime import datetime as datetime
@@ -20,6 +21,7 @@ from app.objects.beatmap import Beatmap
 from app.repositories.tourney_pools import TourneyPool
 from app.utils import escape_enum
 from app.utils import pymysql_encode
+from app.constants.privileges import Privileges
 
 if TYPE_CHECKING:
     from asyncio import TimerHandle
@@ -117,6 +119,30 @@ class StartingTimers(TypedDict):
     alerts: list[TimerHandle]
     time: float
 
+class Message():
+    def __init__(self, content : str, sender : Player, time: float):
+        self.content = content
+        self.sender = sender
+        self.time = time
+
+class MatchChatCahnnel(Channel):
+    def __init__(
+        self,
+        name: str,
+        topic: str,
+        read_priv: Privileges = Privileges.UNRESTRICTED,
+        write_priv: Privileges = Privileges.UNRESTRICTED,
+        auto_join: bool = True,
+        instance: bool = False,
+    ) -> None:
+        Channel.__init__(self, name, topic, read_priv, write_priv, auto_join, instance)
+        self.message : list[Message] = []
+    
+    def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
+        Channel.send(self, msg, sender, to_self)
+        self.message.append(Message(msg, sender, time.time()))
+
+
 
 class Match:
     """\
@@ -158,7 +184,7 @@ class Match:
         team_type: MatchTeamTypes,
         freemods: bool,
         seed: int,
-        chat_channel: Channel,
+        chat_channel: MatchChatCahnnel,
         is_tournament_match = False
     ) -> None:
         self.id = id

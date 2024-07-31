@@ -55,6 +55,7 @@ from app.objects.match import MatchTeams
 from app.objects.match import MatchTeamTypes
 from app.objects.match import MatchWinConditions
 from app.objects.match import SlotStatus
+from app.objects.match import MatchChatCahnnel
 from app.objects.player import Player
 from app.objects.score import SubmissionStatus
 from app.repositories import clans as clans_repo
@@ -1377,7 +1378,7 @@ async def mp_make(ctx: Context) -> str | None:
     # create the channel and add it
     # to the global channel list as
     # an instanced channel.
-    chat_channel = Channel(
+    chat_channel = MatchChatCahnnel(
         name=f"#multi_{match_id}",
         topic=f"MID {match_id}'s multiplayer channel.",
         auto_join=False,

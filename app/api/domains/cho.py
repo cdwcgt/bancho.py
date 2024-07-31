@@ -51,6 +51,7 @@ from app.objects.match import Match
 from app.objects.match import MatchTeams
 from app.objects.match import MatchTeamTypes
 from app.objects.match import MatchWinConditions
+from app.objects.match import MatchChatCahnnel
 from app.objects.match import Slot
 from app.objects.match import SlotStatus
 from app.objects.player import Action
@@ -1406,7 +1407,7 @@ class MatchCreate(BasePacket):
         # create the channel and add it
         # to the global channel list as
         # an instanced channel.
-        chat_channel = Channel(
+        chat_channel = MatchChatCahnnel(
             name=f"#multi_{match_id}",
             topic=f"MID {match_id}'s multiplayer channel.",
             auto_join=False,
