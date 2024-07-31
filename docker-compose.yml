@@ -3,25 +3,25 @@ version: "3.8"
 services:
   ## shared services
 
-  mysql:
-    image: mysql:latest
-    # ports:
-    #   - ${DB_PORT}:${DB_PORT}
-    environment:
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASS}
-      MYSQL_DATABASE: ${DB_NAME}
-      NYSQL_HOST: ${DB_HOST}
-      MYSQL_PORT: ${DB_PORT}
-      MYSQL_RANDOM_ROOT_PASSWORD: "true"
-    volumes:
-      - ./migrations/base.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SHOW DATABASES;\""
-      interval: 2s
-      timeout: 20s
-      retries: 10
+  #mysql:
+  #  image: mysql:latest
+  #  # ports:
+  #  #   - ${DB_PORT}:${DB_PORT}
+  #  environment:
+  #    MYSQL_USER: ${DB_USER}
+  #    MYSQL_PASSWORD: ${DB_PASS}
+  #    MYSQL_DATABASE: ${DB_NAME}
+  #    NYSQL_HOST: ${DB_HOST}
+  #    MYSQL_PORT: ${DB_PORT}
+  #    MYSQL_RANDOM_ROOT_PASSWORD: "true"
+  #  volumes:
+  #    - ./migrations/base.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  #    - db-data:/var/lib/mysql
+  #  healthcheck:
+  #    test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SHOW DATABASES;\""
+  #    interval: 2s
+  #    timeout: 20s
+  #    retries: 10
 
   redis:
     image: bitnami/redis:latest
@@ -42,15 +42,12 @@ services:
     ports:
       - ${APP_PORT}:${APP_PORT}
     depends_on:
-      mysql:
-        condition: service_healthy
       redis:
         condition: service_started
     tty: true
     init: true
     volumes:
       - .:/srv/root
-      - data:/srv/root/.data
     environment:
       - APP_HOST=${APP_HOST}
       - APP_PORT=${APP_PORT}
@@ -88,7 +85,17 @@ services:
       - SSL_KEY_PATH=${SSL_KEY_PATH}
       - DEVELOPER_MODE=${DEVELOPER_MODE}
 
+  guweb:
+    # we also have a public image: osuakatsuki/bancho.py:latest
+    image: guweb:latest
+    ports:
+      - 10001:10001
+    tty: true
+    init: true
+    volumes:
+      - /home/PercyDan/guweb:/srv/root
+      - /home/PercyDan/bancho.py:/srv/root/bancho.py/
+
 volumes:
-  data:
-  db-data:
   redis-data:
+
