@@ -135,7 +135,7 @@ class MatchChatCahnnel(Channel):
         auto_join: bool = True,
         instance: bool = False,
     ) -> None:
-        super().__init__(self, name, topic, read_priv, write_priv, auto_join, instance)
+        Channel.__init__(self, name, topic, read_priv, write_priv, auto_join, instance)
         self.messages : list[Message] = []
         self.match : Match | None
     
