@@ -137,10 +137,21 @@ class MatchChatCahnnel(Channel):
     ) -> None:
         Channel.__init__(self, name, topic, read_priv, write_priv, auto_join, instance)
         self.messages : list[Message] = []
+        self.match : Match | None
     
     def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
         Channel.send(self, msg, sender, to_self)
         self.messages.append(Message(msg, sender, time.time()))
+        
+    def remove(self, player: Player) -> None:
+        """Remove `player` from the channel's players."""
+        self.players.remove(player)
+
+        if not self.match.is_tournament_match and not self.players and self.instance:
+            # if it's an instance channel and this
+            # is the last member leaving, just remove
+            # the channel from the global list.
+            app.state.sessions.channels.remove(self)
 
 
 
@@ -205,6 +216,7 @@ class Match:
         self.freemods = freemods
 
         self.chat = chat_channel
+        self.chat.match = self
         self.slots = [Slot() for _ in range(16)]
 
         # self.type = MatchTypes.standard

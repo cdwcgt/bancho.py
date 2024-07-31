@@ -118,5 +118,7 @@ async def _remove_expired_tournament_match(interval: int) -> None:
                     lobby = app.state.sessions.channels.get_by_name("#lobby")
                     if lobby:
                         lobby.enqueue(app.packets.dispose_match(match.id))
+                    
+                    app.state.sessions.channels.remove(match.chat)
             else:
                 match.tournament_remove_last_check_time = current_time
