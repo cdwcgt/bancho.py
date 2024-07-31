@@ -16,6 +16,7 @@ RUN poetry install --no-root
 RUN apt update && \
     apt install -y default-mysql-client redis-tools
 
+RUN pip install debugpy
 # NOTE: done last to avoid re-run of previous steps
 COPY . .
 
