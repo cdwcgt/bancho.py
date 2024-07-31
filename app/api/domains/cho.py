@@ -1440,6 +1440,7 @@ class MatchCreate(BasePacket):
         player.join_match(match, self.match_data.passwd)
 
         match.chat.send_bot(f"Match created by {player.name}.")
+        
         log(f"{player} created a new multiplayer match.")
 
 
@@ -1476,6 +1477,8 @@ class MatchJoin(BasePacket):
 
         player.update_latest_activity_soon()
         player.join_match(match, self.match_passwd)
+        match.chat.send_bot(f"Match created by {player.name}.")
+        match.chat.send_bot(f"Match history available https://osu.cdwcgt.top/mp/{match.id}")
 
 
 @register(ClientPackets.PART_MATCH)

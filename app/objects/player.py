@@ -651,6 +651,7 @@ class Player:
         if all(s.empty() for s in self.match.slots):
             if self.match.is_tournament_match:
                 self.match.tournament_remove_last_check_time = time.time()
+                self.match.host_id = -1
             else:
                 # remove the multi from the channels list.
                 # multi is now empty and not a tournament match, chat has been removed.
