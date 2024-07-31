@@ -136,11 +136,11 @@ class MatchChatCahnnel(Channel):
         instance: bool = False,
     ) -> None:
         Channel.__init__(self, name, topic, read_priv, write_priv, auto_join, instance)
-        self.message : list[Message] = []
+        self.messages : list[Message] = []
     
     def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
         Channel.send(self, msg, sender, to_self)
-        self.message.append(Message(msg, sender, time.time()))
+        self.messages.append(Message(msg, sender, time.time()))
 
 
 

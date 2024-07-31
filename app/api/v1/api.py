@@ -1029,6 +1029,30 @@ async def api_get_pool(
         },
     )
 
+from app.objects.match import Match
+
+@router.get("/match_chat")
+async def get_match_chat(
+    match_id: int = Query(..., alias="id", ge=1, le=2_147_483_647),
+    timeafter: float = Query(0, alias="t", ge=0, le=2_147_483_647)
+) -> Response:
+    
+    match: Match | None = app.state.sessions.matches.get(match_id)
+    if not match:
+        return ORJSONResponse(
+            {"status": "Match not found."},
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    
+    messages = match.chat_channel.messages
+    if timeafter > 0:
+        messages = filter(lambda m: m.time > timeafter, messages)
+
+    return ORJSONResponse([
+        {"sender_id": m.sender.id, "sender_name": m.sender.name, "content": m.content, "timestamp": m.time}
+        for m in messages
+    ])
+
 
 # def requires_api_key(f: Callable) -> Callable:
 #     @wraps(f)
