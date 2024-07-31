@@ -1563,6 +1563,15 @@ async def checkUpdates(
     return Response(b"")
 
 
+
+@router.get("/web/osu-getchannelid.php")
+async def getMatchChannel(
+    player: Player = Depends(authenticate_player_session(Query, "u", "h")),
+    match_id: int = Query(..., alias="mp"),
+) -> Response:
+    return match_id
+
+
 """ Misc handlers """
 
 

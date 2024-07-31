@@ -1033,7 +1033,7 @@ from app.objects.match import Match
 
 @router.get("/match_chat")
 async def get_match_chat(
-    match_id: int = Query(..., alias="id", ge=1, le=2_147_483_647),
+    match_id: int = Query(..., alias="id", ge=0, le=2_147_483_647),
     timeafter: float = Query(0, alias="t", ge=0, le=2_147_483_647)
 ) -> Response:
     
