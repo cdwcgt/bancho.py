@@ -140,7 +140,7 @@ class MatchChatCahnnel(Channel):
         self.match : Match | None
     
     def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
-        super().send(self, msg, sender, to_self)
+        super().send(msg, sender, to_self)
         self.messages.append(Message(msg, sender, time.time()))
         
     def remove(self, player: Player) -> None:

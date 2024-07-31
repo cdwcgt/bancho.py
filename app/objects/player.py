@@ -625,6 +625,8 @@ class Player:
         self.enqueue(app.packets.match_join_success(match))
         match.enqueue_state()
 
+        match.chat.send_bot(f"Match history available https://osu.cdwcgt.top/mp/{match.id}")
+
         return True
 
     def leave_match(self) -> None:
