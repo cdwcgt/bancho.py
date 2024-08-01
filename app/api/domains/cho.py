@@ -1477,7 +1477,6 @@ class MatchJoin(BasePacket):
 
         player.update_latest_activity_soon()
         player.join_match(match, self.match_passwd)
-        match.chat.send_bot(f"Match created by {player.name}.")
 
 
 @register(ClientPackets.PART_MATCH)

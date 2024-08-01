@@ -141,11 +141,17 @@ class MatchChatCahnnel(Channel):
         
     def append(self, player: Player) -> None:
         super().append(player)
-        super().send_bot(f"Match history available https://osu.cdwcgt.top/mp/{self.match.id}")
+        bot = app.state.sessions.bot
+        super().send_selective(f"Match history available https://osu.cdwcgt.top/mp/{self.match.id}", bot, {player})
     
     def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
         super().send(msg, sender, to_self)
         self.messages.append(Message(msg, sender, time.time()))
+        
+    def send_bot(self, msg: str) -> None:
+        super().send_bot(msg)
+        bot = app.state.sessions.bot
+        self.messages.append(Message(msg, bot, time.time()))
         
     def remove(self, player: Player) -> None:
         """Remove `player` from the channel's players."""
