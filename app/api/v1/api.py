@@ -1037,14 +1037,14 @@ async def get_match_chat(
     timeafter: float = Query(0, alias="t", ge=0, le=2_147_483_647)
 ) -> Response:
     
-    match = app.state.sessions.matches[match_id]
+    match: Match | None = app.state.sessions.matches[match_id]
     if not match:
         return ORJSONResponse(
             {"status": "Match not found."},
             status_code=status.HTTP_404_NOT_FOUND,
         )
     
-    messages = match.chat_channel.messages
+    messages = match.chat.messages
     if timeafter > 0:
         messages = filter(lambda m: m.time > timeafter, messages)
 
