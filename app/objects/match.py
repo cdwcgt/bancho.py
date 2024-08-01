@@ -141,7 +141,7 @@ class MatchChatCahnnel(Channel):
         
     def append(self, player: Player) -> None:
         super().append(player)
-        super().send_bot(f"Match history available https://osu.cdwcgt.top/mp/{match.id}")
+        super().send_bot(f"Match history available https://osu.cdwcgt.top/mp/{self.match.id}")
     
     def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
         super().send(msg, sender, to_self)
