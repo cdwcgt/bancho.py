@@ -142,7 +142,7 @@ class MatchChatCahnnel(Channel):
     def append(self, player: Player) -> None:
         super().append(player)
         bot = app.state.sessions.bot
-        super().send_selective(f"Match history available https://osu.cdwcgt.top/mp/{self.match.id}", bot, {player})
+        super().send_selective(f"Match channel ID: {self.match.id + 1}", bot, {player})
     
     def send(self, msg: str, sender: Player, to_self: bool = False) -> None:
         super().send(msg, sender, to_self)

@@ -1037,6 +1037,8 @@ async def get_match_chat(
     timeafter: float = Query(0, alias="t", ge=0, le=2_147_483_647)
 ) -> Response:
     
+    match_id -= 1
+    
     match: Match | None = app.state.sessions.matches[match_id]
     if not match:
         return ORJSONResponse(
